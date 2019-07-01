@@ -21,6 +21,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -44,6 +45,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,19 +70,6 @@ public class BluetoothChatFragment extends Fragment {
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
-    private Button mAudioButton;
-
-    // Requesting permission to RECORD_AUDIO
-    private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
-
-    private static final String LOG_TAG = "AudioRecordTest";
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-    private static String fileName = null;
-
-    private Audio.RecordButton recordButton = null;
-    private MediaRecorder recorder = null;
-    private MediaPlayer player = null;
 
     /**
      * Name of the connected device
@@ -106,7 +95,19 @@ public class BluetoothChatFragment extends Fragment {
      * Member object for the chat services
      */
     private BluetoothChatService mChatService = null;
-    private boolean mStartRecording = true;
+
+    private static final String LOG_TAG = "AudioRecordTest";
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private static String fileName = null;
+
+    private MediaRecorder recorder = null;
+    private MediaPlayer player = null;
+    private Button mButtonGravar;
+
+    // Requesting permission to RECORD_AUDIO
+    private boolean permissionToRecordAccepted = false;
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+    boolean mStartRecording = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,7 +180,7 @@ public class BluetoothChatFragment extends Fragment {
         mConversationView = (ListView) view.findViewById(R.id.in);
         mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
         mSendButton = (Button) view.findViewById(R.id.button_send);
-        mAudioButton = view.findViewById(R.id.button_audio);
+        mButtonGravar = view.findViewById(R.id.button_gravar);
     }
 
     /**
@@ -209,17 +210,14 @@ public class BluetoothChatFragment extends Fragment {
             }
         });
 
-        mAudioButton.setOnClickListener(new View.OnClickListener() {
+        mButtonGravar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                /*Intent discoverableIntent = new Intent(getActivity(), Audio.class);
-                startActivity(discoverableIntent);*/
-
+            public void onClick(View v) {
                 onRecord(mStartRecording);
                 if (mStartRecording) {
-                    mAudioButton.setText("PARAR");
+                    mButtonGravar.setText("PARAR");
                 } else {
-                    mAudioButton.setText("GRAVAR");
+                    mButtonGravar.setText("GRAVAR");
                 }
                 mStartRecording = !mStartRecording;
             }
@@ -444,12 +442,13 @@ public class BluetoothChatFragment extends Fragment {
         return false;
     }
 
+    //Audio methods
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
 

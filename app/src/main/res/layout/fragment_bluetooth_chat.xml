@@ -34,7 +34,7 @@
 
         <EditText
             android:id="@+id/edit_text_out"
-            android:layout_width="190dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="1" />
@@ -46,11 +46,10 @@
             android:text="@string/send" />
 
         <Button
-            android:id="@+id/button_audio"
+            android:id="@+id/button_gravar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="GRAVAR" />
+            android:text="Gravar" />
     </LinearLayout>
 
 </LinearLayout>
